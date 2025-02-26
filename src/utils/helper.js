@@ -123,11 +123,19 @@ export const schema = Yup.object().shape({
   firstName: Yup.string()
     .required("First Name is required")
     .max(20, "First Name must be at most 20 characters")
-    .test("is-not-empty", "First Name cannot be empty", value => value.trim() !== ""),
+    .test(
+      "is-not-empty",
+      "First Name cannot be empty",
+      (value) => value.trim() !== ""
+    ),
   lastName: Yup.string()
     .required("Last Name is required")
     .max(20, "Last Name must be at most 20 characters")
-    .test("is-not-empty", "Last Name cannot be empty", value => value.trim() !== ""),
+    .test(
+      "is-not-empty",
+      "Last Name cannot be empty",
+      (value) => value.trim() !== ""
+    ),
   email: Yup.string()
     .required("Email is required")
     .max(35, "Email must be at most 35 characters")
@@ -135,40 +143,68 @@ export const schema = Yup.object().shape({
       /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
       "Enter a valid email"
     )
-    .test("is-not-empty", "Email cannot be empty", value => value.trim() !== ""),
+    .test(
+      "is-not-empty",
+      "Email cannot be empty",
+      (value) => value.trim() !== ""
+    ),
   contact: Yup.string()
     .required("Contact is required")
     .min(10, "Contact must be at least 10 digits")
     .max(16, "Contact must be at most 16 digits")
     .matches(/^\d+$/, "Only numbers are allowed")
-    .test("is-not-empty", "Contact cannot be empty", value => value.trim() !== ""),
+    .test(
+      "is-not-empty",
+      "Contact cannot be empty",
+      (value) => value.trim() !== ""
+    ),
   LinkedIn: Yup.string()
     .required("LinkedIn is required")
     .matches(
-      /^(https?:\/\/)?(www\.)?linkedin\.com\/(in|pub|company)\/[a-zA-Z0-9_-]+\/?$/,
+      /linkedin\.com/,
       "Invalid LinkedIn profile URL"
     )
-    .test("is-not-empty", "LinkedIn cannot be empty", value => value.trim() !== ""),
+    .test(
+      "is-not-empty",
+      "LinkedIn cannot be empty",
+      (value) => value.trim() !== ""
+    ),
   summary: Yup.string()
     .required("Summary is required")
     .min(60, "Summary must be at most 60 words")
     .max(500, "Summary must be at most 500 words")
-    .test("is-not-empty", "Summary cannot be empty", value => value.trim() !== ""),
+    .test(
+      "is-not-empty",
+      "Summary cannot be empty",
+      (value) => value.trim() !== ""
+    ),
   title: Yup.string()
     .required("Title is required")
-    .test("is-not-empty", "Title cannot be empty", value => value.trim() !== ""),
+    .test(
+      "is-not-empty",
+      "Title cannot be empty",
+      (value) => value.trim() !== ""
+    ),
   profileImage: Yup.string()
     .required("Profile image is required")
-    .test("fileSize", "File size is too large", value => {
+    .test("fileSize", "File size is too large", (value) => {
       if (!value) return true;
-      const base64Length = value.length - (value.indexOf(',') + 1);
-      const padding = (value.charAt(value.length - 2) === '=') ? 2 : ((value.charAt(value.length - 1) === '=') ? 1 : 0);
-      const fileSize = (base64Length * 3 / 4) - padding;
+      const base64Length = value.length - (value.indexOf(",") + 1);
+      const padding =
+        value.charAt(value.length - 2) === "="
+          ? 2
+          : value.charAt(value.length - 1) === "="
+          ? 1
+          : 0;
+      const fileSize = (base64Length * 3) / 4 - padding;
       return fileSize <= FILE_SIZE;
     })
-    .test("fileFormat", "Unsupported file format", value => {
+    .test("fileFormat", "Unsupported file format", (value) => {
       if (!value) return true;
-      const format = value.substring("data:image/".length, value.indexOf(";base64"));
+      const format = value.substring(
+        "data:image/".length,
+        value.indexOf(";base64")
+      );
       return SUPPORTED_FORMATS.includes(`image/${format}`);
     }),
   education: Yup.array().of(educationSchema),

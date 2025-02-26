@@ -6,7 +6,7 @@ function ResumeCard3({ userData, componentRef }) {
       ref={componentRef}
       style={{
         width: "210mm",
-        // minHeight:"100vh",
+        minHeight:"200mm",
         margin: "auto",
         fontFamily: "Arial, sans-serif",
         border: "1px solid #ddd",

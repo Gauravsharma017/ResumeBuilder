@@ -4,12 +4,21 @@ import ResumeCard1 from "./ResumeCard1";
 import ResumeCard2 from "./ResumeCard2";
 import ResumeCard3 from "./ResumeCard3";
 import { useNavigate } from "react-router-dom";
-import { IoMdDownload, IoMdHome, IoMdCreate, IoMdArrowBack } from "react-icons/io";
+import {
+  IoMdDownload,
+  IoMdHome,
+  IoMdCreate,
+  IoMdArrowBack,
+} from "react-icons/io";
 
-function UserCard() {
+function Resume() {
   const userData = useSelector((state) => state.user.userData);
   const componentRef = useRef();
   const navigate = useNavigate();
+
+  if (userData === null) {
+    window.location.href = "/";
+  }
 
   const [selectedTemplate, setSelectedTemplate] = useState(null);
 
@@ -18,7 +27,7 @@ function UserCard() {
   }, []);
 
   const handleEditDetails = () => {
-    navigate("/");
+    navigate("/resumeform");
   };
 
   const handleTemplateClick = (template) => {
@@ -34,43 +43,54 @@ function UserCard() {
       <header className="header-main">
         {selectedTemplate && (
           <>
-            <button className="back-btn" onClick={handleBackClick}>
+            <button onClick={handleBackClick}>
               <IoMdArrowBack /> Back
             </button>
-            <button className="download-btn" onClick={downloadPDF}>
+            <button onClick={downloadPDF}>
               <IoMdDownload /> Download
             </button>
           </>
         )}
+            <button onClick={() => navigate("/")}>
+              <IoMdHome /> Home
+            </button>
         <button onClick={handleEditDetails}>
           <IoMdCreate /> Edit Details
         </button>
-        <button onClick={() => navigate("/")}>
-          <IoMdHome /> Home
-        </button>
       </header>
 
-      {selectedTemplate ? (
+      {selectedTemplate && userData ? (
         <div className="preview" ref={componentRef}>
           {selectedTemplate === 1 && <ResumeCard1 userData={userData} />}
           {selectedTemplate === 2 && <ResumeCard2 userData={userData} />}
           {selectedTemplate === 3 && <ResumeCard3 userData={userData} />}
         </div>
-      ) : (
+      ) : userData ? (
         <div className="template-previews">
-          <div className="template-preview" onClick={() => handleTemplateClick(1)}>
+          <div
+            className="template-preview"
+            onClick={() => handleTemplateClick(1)}
+          >
             <ResumeCard1 userData={userData} />
           </div>
-          <div className="template-preview" onClick={() => handleTemplateClick(2)}>
+          <div
+            className="template-preview"
+            onClick={() => handleTemplateClick(2)}
+          >
             <ResumeCard2 userData={userData} />
           </div>
-          <div className="template-preview" onClick={() => handleTemplateClick(3)}>
+          <div
+            className="template-preview"
+            onClick={() => handleTemplateClick(3)}
+          >
             <ResumeCard3 userData={userData} />
           </div>
         </div>
+      ) : (
+        ""
       )}
     </div>
   );
 }
 
-export default UserCard;
+export default Resume;

@@ -5,12 +5,29 @@ import { schema } from "../utils/helper";
 import { useNavigate } from "react-router-dom";
 import { IoMdRemoveCircleOutline, IoMdAddCircleOutline } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
-import { setUserData } from "../store/userSlice";
+import { setUserData, clearUserData } from "../store/userSlice";
 
 const DataForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.user.userData);
+
+  const initialValue = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    LinkedIn: "",
+    contact: "",
+    summary: "",
+    title: "",
+    education: [{ degree: "", institution: "", year: "" }],
+    workExperience: [{ company: "", role: "", duration: "", description: "" }],
+    skills: [""],
+    certifications: [{ name: "", authority: "", year: "" }],
+    projects: [{ name: "", description: "", link: "" }],
+    languages: [""],
+    profileImage: null,
+  };
 
   const {
     register,
@@ -21,24 +38,7 @@ const DataForm = () => {
     setValue,
   } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: userData || {
-      firstName: "",
-      lastName: "",
-      email: "",
-      LinkedIn: "",
-      contact: "",
-      summary: "",
-      title: "",
-      education: [{ degree: "", institution: "", year: "" }],
-      workExperience: [
-        { company: "", role: "", duration: "", description: "" },
-      ],
-      skills: [""],
-      certifications: [{ name: "", authority: "", year: "" }],
-      projects: [{ name: "", description: "", link: "" }],
-      languages: [""],
-      profileImage: null,
-    },
+    defaultValues: userData || initialValue,
   });
 
   useEffect(() => {
@@ -95,21 +95,41 @@ const DataForm = () => {
     }
   };
 
+  const handleReset = () => {
+    reset(initialValue);
+    dispatch(clearUserData());
+  };
+
   return (
     <>
-      <h1 style={{position:'fixed',top:'0px',left:'15px',color:'rgb(0,0,0,0.7)'}}><i>Resumee</i></h1>
+      <header className="header-main">
+        <img
+          src={"./resumeBuilder.png"}
+          width={150}
+          alt="ResumeBuilder"
+          onClick={() => navigate("/resumeform")}
+        />
+      </header>
       <form className="form" onSubmit={handleSubmit(onSubmit)}>
         <div className="form-section">
           <div className="form-item">
             <label>First Name</label>
-            <input placeholder="First Name" {...register("firstName")} />
+            <input
+              maxLength={20}
+              placeholder="First Name"
+              {...register("firstName")}
+            />
             {errors.firstName && (
               <p className="error">{errors.firstName.message}</p>
             )}
           </div>
           <div className="form-item">
             <label>Last Name</label>
-            <input placeholder="Last Name" {...register("lastName")} />
+            <input
+              maxLength={20}
+              placeholder="Last Name"
+              {...register("lastName")}
+            />
             {errors.lastName && (
               <p className="error">{errors.lastName.message}</p>
             )}
@@ -143,7 +163,11 @@ const DataForm = () => {
           </div>
           <div className="form-item">
             <label>Contact</label>
-            <input placeholder="Contact" {...register("contact")} />
+            <input
+              maxLength={13}
+              placeholder="Contact"
+              {...register("contact")}
+            />
             {errors.contact && (
               <p className="error">{errors.contact.message}</p>
             )}
@@ -362,7 +386,7 @@ const DataForm = () => {
           <button type="submit" className="submit-btn">
             Submit
           </button>
-          <button type="button" onClick={() => reset()} className="reset-btn">
+          <button type="button" onClick={handleReset} className="reset-btn">
             Reset
           </button>
         </div>
